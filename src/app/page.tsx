@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -8,8 +9,14 @@ export default function Home() {
         Next.js + React + shadcn/ui starter template
       </p>
       <div className="flex gap-3">
-        <Button>Get Started</Button>
-        <Button variant="outline">Learn More</Button>
+        <Button asChild>
+          <Link href="/about">Get Started</Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="https://nextjs.org/docs" target="_blank" rel="noopener noreferrer">
+            Learn More
+          </Link>
+        </Button>
       </div>
     </main>
   );
