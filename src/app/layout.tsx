@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export const metadata: Metadata = {
   title: 'My App',
@@ -12,8 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen antialiased">{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen antialiased">
+        <ThemeProvider>
+          <header className="flex justify-end p-4">
+            <ThemeToggle />
+          </header>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
