@@ -12,6 +12,7 @@
 npm run dev        # Start dev server
 npm run build      # Build to dist/ (static export)
 npx tsc --noEmit   # Type check
+npm run lint       # Run ESLint
 ```
 
 ## Project Structure
