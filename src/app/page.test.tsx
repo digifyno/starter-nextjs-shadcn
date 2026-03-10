@@ -9,6 +9,6 @@ describe('Home page', () => {
 
   it('renders Get Started button', () => {
     render(<Home />);
-    expect(screen.getByRole('button', { name: /get started/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /get started/i })).toBeInTheDocument();
   });
 });
