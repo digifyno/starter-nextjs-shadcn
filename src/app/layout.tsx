@@ -4,8 +4,16 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 export const metadata: Metadata = {
-  title: 'My App',
-  description: 'Built with Next.js, React, and shadcn/ui',
+  title: {
+    default: 'My App',
+    template: '%s | My App',
+  },
+  description: 'Your app description here.',
+  openGraph: {
+    title: 'My App',
+    description: 'Your app description here.',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
