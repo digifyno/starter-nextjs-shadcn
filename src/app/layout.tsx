@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 export const metadata: Metadata = {
   title: {
@@ -34,7 +35,9 @@ export default function RootLayout({
           <header className="flex justify-end p-4">
             <ThemeToggle />
           </header>
-          <div id="main-content">{children}</div>
+          <ErrorBoundary>
+            <main id="main-content">{children}</main>
+          </ErrorBoundary>
         </ThemeProvider>
       </body>
     </html>
