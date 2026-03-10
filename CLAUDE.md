@@ -33,6 +33,8 @@ src/
     theme-provider.tsx  # ThemeProvider (class-based dark mode)
     theme-toggle.tsx    # Dark/light mode toggle button
     ui/            # shadcn/ui components (Button, etc.)
+  hooks/
+    use-*.ts       # Custom hooks (use-* naming convention)
   lib/
     utils.ts       # cn() helper (clsx + tailwind-merge)
   test/
