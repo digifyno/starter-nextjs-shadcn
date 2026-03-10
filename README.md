@@ -18,3 +18,12 @@ npm run build
 ```
 
 Outputs static files to `dist/`.
+
+## Preview Production Build
+
+```bash
+npm run build
+npm run preview
+```
+
+Open [http://localhost:3000](http://localhost:3000) to preview the static output.

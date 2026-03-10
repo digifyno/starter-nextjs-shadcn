@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "NODE_ENV=production next build",
-    "start": "next start",
+    "preview": "serve dist",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -31,6 +31,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
     "jsdom": "^28.1.0",
+    "serve": "^14.2.6",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.7.0",
     "vitest": "^4.0.18"
