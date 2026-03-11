@@ -87,3 +87,11 @@ This project uses `output: 'export'` for static hosting. The following are NOT a
 - Middleware
 - `next/image` optimization (images are unoptimized)
 - Dynamic routes without `generateStaticParams`
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NEXT_PUBLIC_BASE_URL` | The canonical base URL of the deployed site, used in `sitemap.xml` and `robots.txt` | `https://example.com` |
+
+Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_BASE_URL` to your production domain before building.
