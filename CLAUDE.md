@@ -25,11 +25,13 @@ src/
     about/
       page.tsx     # About page (/about)
     globals.css    # Tailwind v4 @theme config + base styles
-    layout.tsx     # Root layout (metadata, html/body, ThemeProvider)
+    layout.test.tsx  # Full-layout axe accessibility test
+    layout.tsx     # Root layout (metadata, html/body, ThemeProvider, ErrorBoundary, skip-to-content)
     not-found.tsx  # 404 page
     page.test.tsx  # Home page smoke test
     page.tsx       # Home page (/)
   components/
+    error-boundary.tsx  # ErrorBoundary (wraps header + main; fallback uses Button)
     theme-provider.tsx  # ThemeProvider (class-based dark mode)
     theme-toggle.tsx    # Dark/light mode toggle button
     ui/            # shadcn/ui components (Button, etc.)
@@ -78,6 +80,17 @@ import Home from './page';
 it('renders heading', () => {
   render(<Home />);
   expect(screen.getByRole('heading')).toBeInTheDocument();
+});
+```
+
+For accessibility testing use `jest-axe`:
+```tsx
+import { axe, toHaveNoViolations } from 'jest-axe';
+expect.extend(toHaveNoViolations);
+
+it('has no axe violations', async () => {
+  const { container } = render(<MyComponent />);
+  expect(await axe(container)).toHaveNoViolations();
 });
 ```
 
