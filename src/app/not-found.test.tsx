@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import NotFound from './not-found';
+
+expect.extend(toHaveNoViolations);
 
 describe('NotFound page', () => {
   it('renders 404 message', () => {
@@ -11,5 +14,11 @@ describe('NotFound page', () => {
   it('has a link back to home', () => {
     render(<NotFound />);
     expect(screen.getByRole('link', { name: /go home/i })).toHaveAttribute('href', '/');
+  });
+
+  it('has no axe accessibility violations', async () => {
+    const { container } = render(<NotFound />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 });
