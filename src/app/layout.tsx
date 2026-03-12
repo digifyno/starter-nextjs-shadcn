@@ -39,10 +39,10 @@ export default function RootLayout({
           Skip to content
         </a>
         <ThemeProvider>
-          <header className="flex justify-end p-4">
-            <ThemeToggle />
-          </header>
           <ErrorBoundary>
+            <header className="flex justify-end p-4">
+              <ThemeToggle />
+            </header>
             <main id="main-content">{children}</main>
           </ErrorBoundary>
         </ThemeProvider>

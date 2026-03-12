@@ -1,5 +1,6 @@
 'use client';
 import { Component, type ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Props { children: ReactNode; fallback?: ReactNode; }
 interface State { hasError: boolean; error?: Error; }
@@ -23,12 +24,9 @@ export class ErrorBoundary extends Component<Props, State> {
       return this.props.fallback ?? (
         <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
           <p className="text-lg font-medium">Something went wrong.</p>
-          <button
-            onClick={this.reset}
-            className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90"
-          >
+          <Button onClick={this.reset}>
             Try again
-          </button>
+          </Button>
         </div>
       );
     }

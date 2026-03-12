@@ -78,4 +78,15 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('Custom fallback')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /try again/i })).not.toBeInTheDocument();
   });
+
+  it('"Try again" button has focus-visible ring classes for keyboard accessibility', () => {
+    render(
+      <ErrorBoundary>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>
+    );
+    const button = screen.getByRole('button', { name: /try again/i });
+    // The shadcn Button component includes focus-visible ring classes
+    expect(button.className).toMatch(/focus-visible/);
+  });
 });
