@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
@@ -13,8 +14,13 @@ export default function Home() {
           <Link href="/about">Get Started</Link>
         </Button>
         <Button variant="outline" asChild>
-          <Link href="https://nextjs.org/docs" target="_blank" rel="noopener noreferrer">
-            Learn More
+          <Link
+            href="https://nextjs.org/docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Learn More (opens in a new tab)"
+          >
+            Learn More <ExternalLink className="h-4 w-4" />
           </Link>
         </Button>
       </div>

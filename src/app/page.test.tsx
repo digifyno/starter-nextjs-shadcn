@@ -15,6 +15,13 @@ describe('Home page', () => {
     expect(screen.getByRole('link', { name: /get started/i })).toBeInTheDocument();
   });
 
+  it('renders Learn More link with accessible label for new tab', () => {
+    render(<Home />);
+    expect(
+      screen.getByRole('link', { name: 'Learn More (opens in a new tab)' })
+    ).toBeInTheDocument();
+  });
+
   it('has no axe accessibility violations', async () => {
     const { container } = render(<Home />);
     const results = await axe(container);
