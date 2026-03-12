@@ -13,8 +13,9 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: { componentStack: string }) {
-    // Replace with logger when available
-    console.error('ErrorBoundary caught:', error, info.componentStack);
+    if (process.env.NODE_ENV === 'development') {
+      console.error('ErrorBoundary caught:', error, info.componentStack);
+    }
   }
 
   reset = () => this.setState({ hasError: false, error: undefined });
