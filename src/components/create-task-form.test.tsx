@@ -13,11 +13,25 @@ describe('CreateTaskForm', () => {
     expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
   });
 
+  it('title input has no aria-describedby before validation', () => {
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    expect(screen.getByLabelText(/title/i)).not.toHaveAttribute('aria-describedby');
+  });
+
   it('shows validation error when title is empty on submit', async () => {
     const user = userEvent.setup();
     render(<CreateTaskForm onSubmit={vi.fn()} />);
     await user.click(screen.getByRole('button', { name: /create task/i }));
     expect(screen.getByRole('alert')).toHaveTextContent(/title is required/i);
+  });
+
+  it('links title input to error message via aria-describedby after failed submit', async () => {
+    const user = userEvent.setup();
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    await user.click(screen.getByRole('button', { name: /create task/i }));
+    const titleInput = screen.getByLabelText(/title/i);
+    const errorMsg = screen.getByRole('alert');
+    expect(titleInput).toHaveAttribute('aria-describedby', errorMsg.id);
   });
 
   it('does not call onSubmit when title is empty', async () => {
@@ -55,6 +69,16 @@ describe('CreateTaskForm', () => {
     await user.type(screen.getByLabelText(/title/i), 'Fixed Title');
     await user.click(screen.getByRole('button', { name: /create task/i }));
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('removes aria-describedby from title input after successful submit', async () => {
+    const user = userEvent.setup();
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    await user.click(screen.getByRole('button', { name: /create task/i }));
+    expect(screen.getByLabelText(/title/i)).toHaveAttribute('aria-describedby');
+    await user.type(screen.getByLabelText(/title/i), 'Fixed Title');
+    await user.click(screen.getByRole('button', { name: /create task/i }));
+    expect(screen.getByLabelText(/title/i)).not.toHaveAttribute('aria-describedby');
   });
 
   it('does not submit whitespace-only title', async () => {
