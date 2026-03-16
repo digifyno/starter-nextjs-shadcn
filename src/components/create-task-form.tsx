@@ -3,9 +3,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
+export type TaskPriority = 'low' | 'medium' | 'high';
+
 export interface TaskFormData {
   title: string;
   description: string;
+  priority: TaskPriority;
 }
 
 interface CreateTaskFormProps {
@@ -15,6 +18,7 @@ interface CreateTaskFormProps {
 export function CreateTaskForm({ onSubmit }: CreateTaskFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState<TaskPriority>('medium');
   const [errors, setErrors] = useState<{ title?: string }>({});
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -25,7 +29,7 @@ export function CreateTaskForm({ onSubmit }: CreateTaskFormProps) {
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      onSubmit({ title: title.trim(), description: description.trim() });
+      onSubmit({ title: title.trim(), description: description.trim(), priority });
     }
   };
 
@@ -56,6 +60,18 @@ export function CreateTaskForm({ onSubmit }: CreateTaskFormProps) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+      </div>
+      <div>
+        <label htmlFor="priority">Priority</label>
+        <select
+          id="priority"
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as TaskPriority)}
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
       </div>
       <Button type="submit">Create Task</Button>
     </form>

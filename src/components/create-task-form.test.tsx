@@ -63,7 +63,7 @@ describe('CreateTaskForm', () => {
     render(<CreateTaskForm onSubmit={onSubmit} />);
     await user.type(screen.getByLabelText(/title/i), 'My Task');
     await user.click(screen.getByRole('button', { name: /create task/i }));
-    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '' });
+    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'medium' });
   });
 
   it('calls onSubmit with description when both fields are filled', async () => {
@@ -73,7 +73,7 @@ describe('CreateTaskForm', () => {
     await user.type(screen.getByLabelText(/title/i), 'My Task');
     await user.type(screen.getByLabelText(/description/i), 'A description');
     await user.click(screen.getByRole('button', { name: /create task/i }));
-    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: 'A description' });
+    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: 'A description', priority: 'medium' });
   });
 
   it('clears validation error on successful re-submit', async () => {
@@ -104,5 +104,48 @@ describe('CreateTaskForm', () => {
     await user.click(screen.getByRole('button', { name: /create task/i }));
     expect(onSubmit).not.toHaveBeenCalled();
     expect(screen.getByRole('alert')).toHaveTextContent(/title is required/i);
+  });
+
+  describe('priority metadata', () => {
+    it('renders priority select with default value medium', () => {
+      render(<CreateTaskForm onSubmit={vi.fn()} />);
+      expect(screen.getByLabelText(/priority/i)).toHaveValue('medium');
+    });
+
+    it('priority select has low, medium, and high options', () => {
+      render(<CreateTaskForm onSubmit={vi.fn()} />);
+      expect(screen.getByRole('option', { name: /^low$/i })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: /^medium$/i })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: /^high$/i })).toBeInTheDocument();
+    });
+
+    it('calls onSubmit with default priority medium', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'My Task');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'medium' });
+    });
+
+    it('calls onSubmit with selected priority high', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'My Task');
+      await user.selectOptions(screen.getByLabelText(/priority/i), 'high');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'high' });
+    });
+
+    it('calls onSubmit with selected priority low', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'My Task');
+      await user.selectOptions(screen.getByLabelText(/priority/i), 'low');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'low' });
+    });
   });
 });
