@@ -13,6 +13,21 @@ describe('CreateTaskForm', () => {
     expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
   });
 
+  it('title input defaults to empty value', () => {
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    expect(screen.getByLabelText(/title/i)).toHaveValue('');
+  });
+
+  it('description input defaults to empty value', () => {
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    expect(screen.getByLabelText(/description/i)).toHaveValue('');
+  });
+
+  it('shows no validation error on initial render', () => {
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
   it('title input has no aria-describedby before validation', () => {
     render(<CreateTaskForm onSubmit={vi.fn()} />);
     expect(screen.getByLabelText(/title/i)).not.toHaveAttribute('aria-describedby');
