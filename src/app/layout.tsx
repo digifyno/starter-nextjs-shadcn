@@ -38,6 +38,17 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'My App',
+              url: process.env.NEXT_PUBLIC_BASE_URL ?? 'https://example.com',
+            }),
+          }}
+        />
         <ThemeProvider>
           <ErrorBoundary>
             <header className="flex justify-end p-4">
