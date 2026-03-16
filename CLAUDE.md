@@ -56,8 +56,24 @@ Add `'use client'` at the top of files that use hooks (`useState`, `useEffect`, 
 ### Adding shadcn/ui Components
 ```bash
 npx shadcn@latest add <component-name>
+
+# Preview changes before applying
+npx shadcn@latest add <component-name> --dry-run
+npx shadcn@latest add <component-name> --diff
 ```
+
 Components are added to `src/components/ui/`. They use the unified `radix-ui` package.
+
+### Using Design System Presets
+Share your entire design system (colors, fonts, radius) as a preset code:
+```bash
+# Apply a preset during init
+npx shadcn@latest init --preset <code>
+
+# Reinitialize with a different preset
+npx shadcn@latest init --preset <code>
+```
+Generate and share presets at https://ui.shadcn.com/create
 
 ### Tailwind v4
 No `tailwind.config.js` -- theme is configured with `@theme` blocks in `src/app/globals.css`.
