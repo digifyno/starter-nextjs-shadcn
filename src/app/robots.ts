@@ -1,12 +1,16 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next'
 
-export const dynamic = 'force-static';
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://example.com';
+export const dynamic = 'force-static'
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://example.com'
   return {
-    rules: { userAgent: '*', allow: '/' },
-    sitemap: `${BASE_URL}/sitemap.xml`,
-  };
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+      },
+    ],
+    sitemap: `${baseUrl}/sitemap.xml`,
+  }
 }
