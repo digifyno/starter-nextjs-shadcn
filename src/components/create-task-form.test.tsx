@@ -106,6 +106,18 @@ describe('CreateTaskForm', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(/title is required/i);
   });
 
+  it('title input does not have aria-invalid="true" initially', () => {
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    expect(screen.getByLabelText(/title/i)).not.toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('title input has aria-invalid="true" when validation error is shown', async () => {
+    const user = userEvent.setup();
+    render(<CreateTaskForm onSubmit={vi.fn()} />);
+    await user.click(screen.getByRole('button', { name: /create task/i }));
+    expect(screen.getByLabelText(/title/i)).toHaveAttribute('aria-invalid', 'true');
+  });
+
   describe('priority metadata', () => {
     it('renders priority select with default value medium', () => {
       render(<CreateTaskForm onSubmit={vi.fn()} />);

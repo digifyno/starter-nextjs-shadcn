@@ -45,6 +45,7 @@ export function CreateTaskForm({ onSubmit }: CreateTaskFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           aria-required="true"
+          aria-invalid={!!errors.title}
           aria-describedby={errors.title ? 'title-error' : undefined}
         />
         {errors.title && (
