@@ -27,6 +27,7 @@ src/
     globals.css    # Tailwind v4 @theme config + base styles
     layout.test.tsx  # Full-layout axe accessibility test
     layout.tsx     # Root layout (metadata, html/body, ThemeProvider, ErrorBoundary, skip-to-content)
+    manifest.ts    # PWA web app manifest (generates /manifest.webmanifest)
     not-found.tsx  # 404 page
     page.test.tsx  # Home page smoke test
     page.tsx       # Home page (/)
@@ -41,7 +42,9 @@ src/
     utils.ts       # cn() helper (clsx + tailwind-merge)
   test/
     setup.ts       # Vitest setup (@testing-library/jest-dom matchers)
-public/            # Static assets
+public/
+  icon-192x192.png  # PWA icon (192×192) — replace with production icon
+  icon-512x512.png  # PWA icon (512×512) — replace with production icon
 dist/              # Build output (git-ignored)
 ```
 
