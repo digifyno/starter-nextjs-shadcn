@@ -26,12 +26,13 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText('OK')).toBeInTheDocument();
   });
 
-  it('renders default fallback with "Try again" button on error', () => {
+  it('renders default fallback with role="alert" and "Try again" button on error', () => {
     render(
       <ErrorBoundary>
         <Bomb shouldThrow={true} />
       </ErrorBoundary>
     );
+    expect(screen.getByRole('alert')).toBeInTheDocument();
     expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
   });

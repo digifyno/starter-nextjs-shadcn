@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
   render() {
     if (this.state.hasError) {
       return this.props.fallback ?? (
-        <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
+        <div role="alert" className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
           <p className="text-lg font-medium">Something went wrong.</p>
           <Button onClick={this.reset}>
             Try again
