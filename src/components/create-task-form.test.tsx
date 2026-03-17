@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import { CreateTaskForm } from './create-task-form';
+
+expect.extend(toHaveNoViolations);
 
 describe('CreateTaskForm', () => {
   it('renders title input as required', () => {
@@ -118,6 +121,18 @@ describe('CreateTaskForm', () => {
     expect(screen.getByLabelText(/title/i)).toHaveAttribute('aria-invalid', 'true');
   });
 
+  it('has no axe accessibility violations on initial render', async () => {
+    const { container } = render(<CreateTaskForm onSubmit={vi.fn()} />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  it('has no axe accessibility violations when showing validation error', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<CreateTaskForm onSubmit={vi.fn()} />);
+    await user.click(screen.getByRole('button', { name: /create task/i }));
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
   describe('priority metadata', () => {
     it('renders priority select with default value medium', () => {
       render(<CreateTaskForm onSubmit={vi.fn()} />);
@@ -158,6 +173,30 @@ describe('CreateTaskForm', () => {
       await user.selectOptions(screen.getByLabelText(/priority/i), 'low');
       await user.click(screen.getByRole('button', { name: /create task/i }));
       expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'low' });
+    });
+
+    it('priority select reflects change when updated', async () => {
+      const user = userEvent.setup();
+      render(<CreateTaskForm onSubmit={vi.fn()} />);
+      await user.selectOptions(screen.getByLabelText(/priority/i), 'high');
+      expect(screen.getByLabelText(/priority/i)).toHaveValue('high');
+      await user.selectOptions(screen.getByLabelText(/priority/i), 'medium');
+      expect(screen.getByLabelText(/priority/i)).toHaveValue('medium');
+    });
+
+    it('calls onSubmit with all three metadata fields', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'Full Task');
+      await user.type(screen.getByLabelText(/description/i), 'Full description');
+      await user.selectOptions(screen.getByLabelText(/priority/i), 'high');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith({
+        title: 'Full Task',
+        description: 'Full description',
+        priority: 'high',
+      });
     });
   });
 });
