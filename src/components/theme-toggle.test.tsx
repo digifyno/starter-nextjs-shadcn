@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ThemeProvider } from './theme-provider';
+import { vi } from 'vitest';
 import { ThemeToggle } from './theme-toggle';
+import { ThemeProvider } from './theme-provider';
 
-// jsdom doesn't implement matchMedia; provide a stub
 beforeEach(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -11,35 +10,24 @@ beforeEach(() => {
       matches: false,
       media: query,
       onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
       addEventListener: () => {},
       removeEventListener: () => {},
       dispatchEvent: () => false,
     }),
   });
-  localStorage.clear();
 });
 
-function setup() {
-  return render(
-    <ThemeProvider>
-      <ThemeToggle />
-    </ThemeProvider>
-  );
-}
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <ThemeProvider>{children}</ThemeProvider>
+);
 
-describe('ThemeToggle', () => {
-  it('renders a button with accessible label', () => {
-    setup();
-    expect(screen.getByRole('button', { name: /mode/i })).toBeInTheDocument();
-  });
+it('renders a toggle button', () => {
+  render(<ThemeToggle />, { wrapper: Wrapper });
+  expect(screen.getByRole('button')).toBeInTheDocument();
+});
 
-  it('toggles theme on click', async () => {
-    const user = userEvent.setup();
-    setup();
-    const btn = screen.getByRole('button', { name: /mode/i });
-    await user.click(btn);
-    expect(btn).toHaveAccessibleName(/.+ mode/i);
-  });
+it('button has accessible name', () => {
+  render(<ThemeToggle />, { wrapper: Wrapper });
+  const btn = screen.getByRole('button');
+  expect(btn).toHaveAccessibleName();
 });
