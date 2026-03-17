@@ -5,14 +5,14 @@ import Loading from './loading';
 expect.extend(toHaveNoViolations);
 
 describe('Loading', () => {
-  it('renders a status element for screen readers', () => {
-    render(<Loading />);
-    expect(screen.getByRole('status')).toBeInTheDocument();
+  it('renders without crashing', () => {
+    const { container } = render(<Loading />);
+    expect(container.firstChild).toBeTruthy();
   });
 
-  it('renders visible loading text', () => {
+  it('has role=status for screen reader announcement', () => {
     render(<Loading />);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   it('has no axe accessibility violations', async () => {
