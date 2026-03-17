@@ -27,6 +27,7 @@ src/
     globals.css    # Tailwind v4 @theme config + base styles
     layout.test.tsx  # Full-layout axe accessibility test
     layout.tsx     # Root layout (metadata, html/body, ThemeProvider, ErrorBoundary, skip-to-content)
+    loading.tsx    # App Router loading UI skeleton (shown during route transitions)
     manifest.ts    # PWA web app manifest (generates /manifest.webmanifest)
     not-found.tsx  # 404 page
     page.test.tsx  # Home page smoke test
@@ -34,11 +35,13 @@ src/
   components/
     error-boundary.tsx  # ErrorBoundary (wraps header + main; fallback uses Button)
     theme-provider.tsx  # ThemeProvider (class-based dark mode)
+    theme-toggle.test.tsx  # Unit tests for ThemeToggle component
     theme-toggle.tsx    # Dark/light mode toggle button
     ui/            # shadcn/ui components (Button, etc.)
   hooks/
     use-*.ts       # Custom hooks (use-* naming convention)
   lib/
+    utils.test.ts  # Unit tests for cn() helper
     utils.ts       # cn() helper (clsx + tailwind-merge)
   test/
     setup.ts       # Vitest setup (@testing-library/jest-dom matchers)
