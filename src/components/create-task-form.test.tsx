@@ -66,7 +66,7 @@ describe('CreateTaskForm', () => {
     render(<CreateTaskForm onSubmit={onSubmit} />);
     await user.type(screen.getByLabelText(/title/i), 'My Task');
     await user.click(screen.getByRole('button', { name: /create task/i }));
-    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'medium' });
+    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'medium', category: 'feature' });
   });
 
   it('calls onSubmit with description when both fields are filled', async () => {
@@ -76,7 +76,7 @@ describe('CreateTaskForm', () => {
     await user.type(screen.getByLabelText(/title/i), 'My Task');
     await user.type(screen.getByLabelText(/description/i), 'A description');
     await user.click(screen.getByRole('button', { name: /create task/i }));
-    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: 'A description', priority: 'medium' });
+    expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: 'A description', priority: 'medium', category: 'feature' });
   });
 
   it('clears validation error on successful re-submit', async () => {
@@ -152,7 +152,7 @@ describe('CreateTaskForm', () => {
       render(<CreateTaskForm onSubmit={onSubmit} />);
       await user.type(screen.getByLabelText(/title/i), 'My Task');
       await user.click(screen.getByRole('button', { name: /create task/i }));
-      expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'medium' });
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ priority: 'medium' }));
     });
 
     it('calls onSubmit with selected priority high', async () => {
@@ -162,7 +162,7 @@ describe('CreateTaskForm', () => {
       await user.type(screen.getByLabelText(/title/i), 'My Task');
       await user.selectOptions(screen.getByLabelText(/priority/i), 'high');
       await user.click(screen.getByRole('button', { name: /create task/i }));
-      expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'high' });
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ priority: 'high' }));
     });
 
     it('calls onSubmit with selected priority low', async () => {
@@ -172,7 +172,7 @@ describe('CreateTaskForm', () => {
       await user.type(screen.getByLabelText(/title/i), 'My Task');
       await user.selectOptions(screen.getByLabelText(/priority/i), 'low');
       await user.click(screen.getByRole('button', { name: /create task/i }));
-      expect(onSubmit).toHaveBeenCalledWith({ title: 'My Task', description: '', priority: 'low' });
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ priority: 'low' }));
     });
 
     it('priority select reflects change when updated', async () => {
@@ -192,10 +192,95 @@ describe('CreateTaskForm', () => {
       await user.type(screen.getByLabelText(/description/i), 'Full description');
       await user.selectOptions(screen.getByLabelText(/priority/i), 'high');
       await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({
+        title: 'Full Task',
+        description: 'Full description',
+        priority: 'high',
+      }));
+    });
+  });
+
+  describe('category metadata', () => {
+    it('renders category select', () => {
+      render(<CreateTaskForm onSubmit={vi.fn()} />);
+      expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
+    });
+
+    it('category select has feature, bugfix, docs, and refactor options', () => {
+      render(<CreateTaskForm onSubmit={vi.fn()} />);
+      expect(screen.getByRole('option', { name: /^feature$/i })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: /^bugfix$/i })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: /^docs$/i })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: /^refactor$/i })).toBeInTheDocument();
+    });
+
+    it('category select defaults to feature', () => {
+      render(<CreateTaskForm onSubmit={vi.fn()} />);
+      expect(screen.getByLabelText(/category/i)).toHaveValue('feature');
+    });
+
+    it('calls onSubmit with default category feature', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'My Task');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ category: 'feature' }));
+    });
+
+    it('calls onSubmit with selected category bugfix', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'My Task');
+      await user.selectOptions(screen.getByLabelText(/category/i), 'bugfix');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ category: 'bugfix' }));
+    });
+
+    it('calls onSubmit with selected category docs', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'My Task');
+      await user.selectOptions(screen.getByLabelText(/category/i), 'docs');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ category: 'docs' }));
+    });
+
+    it('calls onSubmit with selected category refactor', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'My Task');
+      await user.selectOptions(screen.getByLabelText(/category/i), 'refactor');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
+      expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ category: 'refactor' }));
+    });
+
+    it('category select reflects change when updated', async () => {
+      const user = userEvent.setup();
+      render(<CreateTaskForm onSubmit={vi.fn()} />);
+      await user.selectOptions(screen.getByLabelText(/category/i), 'docs');
+      expect(screen.getByLabelText(/category/i)).toHaveValue('docs');
+      await user.selectOptions(screen.getByLabelText(/category/i), 'feature');
+      expect(screen.getByLabelText(/category/i)).toHaveValue('feature');
+    });
+
+    it('calls onSubmit with all metadata fields including category', async () => {
+      const user = userEvent.setup();
+      const onSubmit = vi.fn();
+      render(<CreateTaskForm onSubmit={onSubmit} />);
+      await user.type(screen.getByLabelText(/title/i), 'Full Task');
+      await user.type(screen.getByLabelText(/description/i), 'Full description');
+      await user.selectOptions(screen.getByLabelText(/priority/i), 'high');
+      await user.selectOptions(screen.getByLabelText(/category/i), 'refactor');
+      await user.click(screen.getByRole('button', { name: /create task/i }));
       expect(onSubmit).toHaveBeenCalledWith({
         title: 'Full Task',
         description: 'Full description',
         priority: 'high',
+        category: 'refactor',
       });
     });
   });

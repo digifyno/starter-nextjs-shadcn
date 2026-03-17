@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 export type TaskPriority = 'low' | 'medium' | 'high';
+export type TaskCategory = 'feature' | 'bugfix' | 'docs' | 'refactor';
 
 export interface TaskFormData {
   title: string;
   description: string;
   priority: TaskPriority;
+  category: TaskCategory;
 }
 
 interface CreateTaskFormProps {
@@ -19,6 +21,7 @@ export function CreateTaskForm({ onSubmit }: CreateTaskFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<TaskPriority>('medium');
+  const [category, setCategory] = useState<TaskCategory>('feature');
   const [errors, setErrors] = useState<{ title?: string }>({});
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,7 +32,7 @@ export function CreateTaskForm({ onSubmit }: CreateTaskFormProps) {
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      onSubmit({ title: title.trim(), description: description.trim(), priority });
+      onSubmit({ title: title.trim(), description: description.trim(), priority, category });
     }
   };
 
@@ -72,6 +75,19 @@ export function CreateTaskForm({ onSubmit }: CreateTaskFormProps) {
           <option value="low">Low</option>
           <option value="medium">Medium</option>
           <option value="high">High</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor="category">Category</label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value as TaskCategory)}
+        >
+          <option value="feature">Feature</option>
+          <option value="bugfix">Bugfix</option>
+          <option value="docs">Docs</option>
+          <option value="refactor">Refactor</option>
         </select>
       </div>
       <Button type="submit">Create Task</Button>
