@@ -29,4 +29,9 @@ describe('GlobalError page', () => {
     await userEvent.click(screen.getByRole('button', { name: /try again/i }));
     expect(reset).toHaveBeenCalledTimes(1);
   });
+  it('has role=alert on the body for screen reader announcement', () => {
+    render(<GlobalError error={new Error('test')} reset={() => {}} />);
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+
 });

@@ -21,6 +21,7 @@ export default function GlobalError({
           textAlign: 'center',
         }}
       >
+        <div role="alert">
         <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Something went wrong</h2>
         <p style={{ color: '#666', marginTop: '0.5rem' }}>
           {error.message || 'An unexpected error occurred'}
@@ -43,6 +44,7 @@ export default function GlobalError({
         >
           Try again
         </button>
+        </div>
       </body>
     </html>
   );
