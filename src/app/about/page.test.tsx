@@ -1,23 +1,26 @@
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import About from './page';
+import AboutPage from './page';
 
 expect.extend(toHaveNoViolations);
 
 describe('About page', () => {
-  it('renders about heading', () => {
-    render(<About />);
-    expect(screen.getByRole('heading', { name: /about/i })).toBeInTheDocument();
+  it('renders without crashing', () => {
+    render(<AboutPage />);
   });
 
-  it('has a link back to home', () => {
-    render(<About />);
+  it('contains main heading', () => {
+    render(<AboutPage />);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('About');
+  });
+
+  it('provides navigation back to home', () => {
+    render(<AboutPage />);
     expect(screen.getByRole('link', { name: /go home/i })).toHaveAttribute('href', '/');
   });
 
   it('has no axe accessibility violations', async () => {
-    const { container } = render(<About />);
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    const { container } = render(<AboutPage />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

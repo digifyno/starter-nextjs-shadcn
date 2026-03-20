@@ -5,20 +5,27 @@ import NotFound from './not-found';
 expect.extend(toHaveNoViolations);
 
 describe('NotFound page', () => {
-  it('renders 404 message', () => {
+  it('renders without crashing', () => {
     render(<NotFound />);
-    expect(screen.getByRole('heading', { name: /404/i })).toBeInTheDocument();
+  });
+
+  it('shows 404 heading', () => {
+    render(<NotFound />);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('404');
+  });
+
+  it('shows page not found message', () => {
+    render(<NotFound />);
     expect(screen.getByText(/page not found/i)).toBeInTheDocument();
   });
 
-  it('has a link back to home', () => {
+  it('provides navigation back to home', () => {
     render(<NotFound />);
     expect(screen.getByRole('link', { name: /go home/i })).toHaveAttribute('href', '/');
   });
 
   it('has no axe accessibility violations', async () => {
     const { container } = render(<NotFound />);
-    const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    expect(await axe(container)).toHaveNoViolations();
   });
 });
