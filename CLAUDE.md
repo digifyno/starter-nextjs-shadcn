@@ -23,17 +23,20 @@ npm run lint       # Run ESLint
 src/
   app/
     about/
+      page.test.tsx  # About page smoke test
       page.tsx     # About page (/about)
     globals.css    # Tailwind v4 @theme config + base styles
     layout.test.tsx  # Full-layout axe accessibility test
     layout.tsx     # Root layout (metadata, html/body, ThemeProvider, ErrorBoundary, skip-to-content)
     loading.tsx    # App Router loading UI skeleton (shown during route transitions)
     manifest.ts    # PWA web app manifest (generates /manifest.webmanifest)
+    not-found.test.tsx  # 404 page tests
     not-found.tsx  # 404 page
     page.test.tsx  # Home page smoke test
     page.tsx       # Home page (/)
   components/
     error-boundary.tsx  # ErrorBoundary (wraps header + main; fallback uses Button)
+    theme-provider.test.tsx  # Unit tests for ThemeProvider component
     theme-provider.tsx  # ThemeProvider (class-based dark mode)
     theme-toggle.test.tsx  # Unit tests for ThemeToggle component
     theme-toggle.tsx    # Dark/light mode toggle button
