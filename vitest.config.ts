@@ -12,7 +12,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/test/**', 'src/components/ui/**'],
+      exclude: ['src/test/**', 'src/**/*.test.{ts,tsx}', 'src/components/ui/**'],
       thresholds: {
         lines: 80,
         functions: 80,

@@ -19,6 +19,12 @@ export class ErrorBoundary extends Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    if (this.state.hasError) {
+      this.containerRef.current?.focus();
+    }
+  }
+
   componentDidUpdate(_prevProps: Props, prevState: State) {
     if (!prevState.hasError && this.state.hasError) {
       this.containerRef.current?.focus();
