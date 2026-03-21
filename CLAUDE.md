@@ -14,6 +14,7 @@ npm run dev        # Start dev server
 npm run build      # Build to dist/ (static export)
 npm run preview    # Preview static build locally (serves dist/)
 npm test           # Run tests (vitest)
+npm run coverage   # Run tests with coverage report (vitest --coverage)
 npx tsc --noEmit   # Type check
 npm run lint       # Run ESLint
 ```
@@ -25,6 +26,8 @@ src/
     about/
       page.test.tsx  # About page smoke test
       page.tsx     # About page (/about)
+    global-error.test.tsx  # Tests for global error boundary
+    global-error.tsx  # Global error boundary (sanitized error messages, role=alert, production guard)
     globals.css    # Tailwind v4 @theme config + base styles
     layout.test.tsx  # Full-layout axe accessibility test
     layout.tsx     # Root layout (metadata, html/body, ThemeProvider, ErrorBoundary, skip-to-content)
