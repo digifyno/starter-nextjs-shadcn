@@ -90,4 +90,14 @@ describe('ErrorBoundary', () => {
     // The shadcn Button component includes focus-visible ring classes
     expect(button.className).toMatch(/focus-visible/);
   });
+
+  it('moves focus into the error container when error boundary catches an error', () => {
+    render(
+      <ErrorBoundary>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>
+    );
+    const alert = screen.getByRole('alert');
+    expect(document.activeElement).toBe(alert);
+  });
 });
