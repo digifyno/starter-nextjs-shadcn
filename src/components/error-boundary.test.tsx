@@ -100,4 +100,78 @@ describe('ErrorBoundary', () => {
     const alert = screen.getByRole('alert');
     expect(document.activeElement).toBe(alert);
   });
+
+  // --- New tests ---
+
+  it('moves focus to content area (not body) after reset', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <ErrorBoundary>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>
+    );
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+
+    rerender(
+      <ErrorBoundary>
+        <Bomb shouldThrow={false} />
+      </ErrorBoundary>
+    );
+    await user.click(screen.getByRole('button', { name: /try again/i }));
+
+    expect(screen.getByText('OK')).toBeInTheDocument();
+    // Focus must move programmatically - not left on body
+    expect(document.activeElement).not.toBe(document.body);
+    // The focused element wraps the child content
+    expect(document.activeElement).toContainElement(screen.getByText('OK'));
+  });
+
+  it('fires onReset callback when Enter is pressed on "Try again" button', async () => {
+    const user = userEvent.setup();
+    const onReset = vi.fn();
+    render(
+      <ErrorBoundary onReset={onReset}>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>
+    );
+
+    const button = screen.getByRole('button', { name: /try again/i });
+    button.focus();
+    await user.keyboard('{Enter}');
+
+    expect(onReset).toHaveBeenCalledTimes(1);
+  });
+
+  it('catches a second error after reset without infinite loops', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <ErrorBoundary>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>
+    );
+
+    // First error - reset
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    rerender(<ErrorBoundary><Bomb shouldThrow={false} /></ErrorBoundary>);
+    await user.click(screen.getByRole('button', { name: /try again/i }));
+    expect(screen.getByText('OK')).toBeInTheDocument();
+
+    // Second error
+    rerender(<ErrorBoundary><Bomb shouldThrow={true} /></ErrorBoundary>);
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+  });
+
+  it('fallback shows accessible "Try again" button and no raw error text', () => {
+    render(
+      <ErrorBoundary>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>
+    );
+    // Raw error message must not be leaked into the UI
+    expect(screen.queryByText(/Test error/)).not.toBeInTheDocument();
+    // Reset button exists with a meaningful accessible name
+    const button = screen.getByRole('button', { name: /try again/i });
+    expect(button).toHaveAccessibleName();
+  });
 });

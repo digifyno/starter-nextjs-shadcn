@@ -2,12 +2,13 @@
 import { Component, createRef, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 
-interface Props { children: ReactNode; fallback?: ReactNode; }
+interface Props { children: ReactNode; fallback?: ReactNode; onReset?: () => void; }
 interface State { hasError: boolean; error?: Error; }
 
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false };
   private containerRef = createRef<HTMLDivElement>();
+  private contentRef = createRef<HTMLDivElement>();
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
@@ -29,9 +30,15 @@ export class ErrorBoundary extends Component<Props, State> {
     if (!prevState.hasError && this.state.hasError) {
       this.containerRef.current?.focus();
     }
+    if (prevState.hasError && !this.state.hasError) {
+      this.contentRef.current?.focus();
+    }
   }
 
-  reset = () => this.setState({ hasError: false, error: undefined });
+  reset = () => {
+    this.setState({ hasError: false, error: undefined });
+    this.props.onReset?.();
+  };
 
   render() {
     if (this.state.hasError) {
@@ -49,6 +56,10 @@ export class ErrorBoundary extends Component<Props, State> {
         </div>
       );
     }
-    return this.props.children;
+    return (
+      <div ref={this.contentRef} tabIndex={-1}>
+        {this.props.children}
+      </div>
+    );
   }
 }
