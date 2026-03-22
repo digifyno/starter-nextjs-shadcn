@@ -38,3 +38,27 @@ describe('RootLayout', () => {
     expect(results).toHaveNoViolations();
   });
 });
+
+describe('dark mode accessibility', () => {
+  beforeEach(() => {
+    document.documentElement.classList.add('dark');
+  });
+  afterEach(() => {
+    document.documentElement.classList.remove('dark');
+  });
+
+  it('has no axe violations in dark mode', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { container } = render(
+      <RootLayout>
+        <div>
+          <h1>Test page</h1>
+          <p>Content</p>
+        </div>
+      </RootLayout>
+    );
+    consoleError.mockRestore();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
