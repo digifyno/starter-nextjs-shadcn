@@ -45,7 +45,8 @@ src/
     theme-toggle.tsx    # Dark/light mode toggle button
     ui/            # shadcn/ui components (Button, etc.)
   hooks/
-    use-*.ts       # Custom hooks (use-* naming convention)
+    use-local-storage.test.ts  # Edge-case tests (SSR, QuotaExceededError, corrupt JSON, null/undefined values)
+    use-local-storage.ts  # useLocalStorage<T>(key, initialValue) — persists state to localStorage; SSR-safe, handles storage errors and corrupt JSON silently
   lib/
     utils.test.ts  # Unit tests for cn() helper
     utils.ts       # cn() helper (clsx + tailwind-merge)
