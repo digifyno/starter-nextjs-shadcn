@@ -4,15 +4,24 @@ import Loading from './loading';
 
 expect.extend(toHaveNoViolations);
 
-describe('Loading', () => {
+describe('Loading component', () => {
   it('renders without crashing', () => {
-    const { container } = render(<Loading />);
-    expect(container.firstChild).toBeTruthy();
+    render(<Loading />);
   });
 
-  it('has role=status for screen reader announcement', () => {
+  it('has a status role for screen readers', () => {
     render(<Loading />);
     expect(screen.getByRole('status')).toBeInTheDocument();
+  });
+
+  it('displays loading text', () => {
+    render(<Loading />);
+    expect(screen.getByText(/loading\.\.\./i)).toBeInTheDocument();
+  });
+
+  it('includes an accessible label on the status container', () => {
+    render(<Loading />);
+    expect(screen.getByRole('status')).toHaveAttribute('aria-label', 'Loading page content');
   });
 
   it('has no axe accessibility violations', async () => {
