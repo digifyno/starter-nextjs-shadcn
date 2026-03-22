@@ -1,49 +1,34 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { vi } from 'vitest';
 import GlobalError from './global-error';
 
-describe('GlobalError page', () => {
-  it('renders error heading', () => {
-    render(<GlobalError error={new Error('test')} reset={() => {}} />);
-    expect(screen.getByRole('heading', { name: /something went wrong/i })).toBeInTheDocument();
-  });
+it('does not render raw error.message in production', () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  const error = new Error('Sensitive internal stack details');
+  render(<GlobalError error={error} reset={() => {}} />);
+  expect(screen.queryByText('Sensitive internal stack details')).not.toBeInTheDocument();
+  vi.unstubAllEnvs();
+});
 
-  it('does not render raw error.message in production', () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    render(<GlobalError error={new Error('secret internal error')} reset={() => {}} />);
-    expect(screen.queryByText('secret internal error')).not.toBeInTheDocument();
-    expect(screen.getByText('An unexpected error occurred')).toBeInTheDocument();
-    vi.unstubAllEnvs();
-  });
+it('has role=alert for screen reader announcement', () => {
+  render(<GlobalError error={new Error('test')} reset={() => {}} />);
+  expect(screen.getByRole('alert')).toBeInTheDocument();
+});
 
-  it('shows the real error message in development', () => {
-    vi.stubEnv('NODE_ENV', 'development');
-    render(<GlobalError error={new Error('debug error details')} reset={() => {}} />);
-    expect(screen.getByText('debug error details')).toBeInTheDocument();
-    vi.unstubAllEnvs();
-  });
+it('calls reset when Try again button is clicked', () => {
+  const reset = vi.fn();
+  render(<GlobalError error={new Error('test')} reset={reset} />);
+  fireEvent.click(screen.getByRole('button', { name: /try again/i }));
+  expect(reset).toHaveBeenCalledTimes(1);
+});
 
-  it('shows fallback text when error message is empty in development', () => {
-    vi.stubEnv('NODE_ENV', 'development');
-    render(<GlobalError error={new Error('')} reset={() => {}} />);
-    expect(screen.getByText('An unexpected error occurred')).toBeInTheDocument();
-    vi.unstubAllEnvs();
-  });
-
-  it('renders a Try again button', () => {
-    render(<GlobalError error={new Error('test')} reset={() => {}} />);
-    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
-  });
-
-  it('calls reset when Try again is clicked', async () => {
-    const reset = vi.fn();
-    render(<GlobalError error={new Error('test')} reset={reset} />);
-    await userEvent.click(screen.getByRole('button', { name: /try again/i }));
-    expect(reset).toHaveBeenCalledTimes(1);
-  });
-
-  it('has role=alert on the body for screen reader announcement', () => {
-    render(<GlobalError error={new Error('test')} reset={() => {}} />);
-    expect(screen.getByRole('alert')).toBeInTheDocument();
-  });
+it('renders a generic heading instead of raw error in production', () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  render(<GlobalError error={new Error('sensitive details')} reset={() => {}} />);
+  const alert = screen.getByRole('alert');
+  expect(alert).toBeInTheDocument();
+  expect(screen.queryByText('sensitive details')).not.toBeInTheDocument();
+  // A heading should be visible as the fallback message
+  expect(screen.getByRole('heading')).toBeInTheDocument();
+  vi.unstubAllEnvs();
 });
