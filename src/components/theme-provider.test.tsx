@@ -1,6 +1,8 @@
-import { render, renderHook, act } from '@testing-library/react';
+import { render, renderHook, act, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { ThemeProvider, useTheme } from './theme-provider';
+import { ThemeToggle } from './theme-toggle';
 
 function makeMatchMedia(matches: boolean) {
   const listeners: ((e: MediaQueryListEvent) => void)[] = [];
@@ -167,6 +169,109 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
     expect(getByText('Hello')).toBeInTheDocument();
+  });
+
+  // ── Integration tests: ThemeToggle + ThemeProvider ────────────────────────
+
+  it('dark mode persists across navigation (unmount and remount)', async () => {
+    const user = userEvent.setup();
+
+    // Initial render with system theme (no localStorage value)
+    const { unmount } = render(
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>
+    );
+
+    // Current theme is 'system' -> clicking sets 'light'
+    await user.click(screen.getByRole('button'));
+    // Now theme is 'light' -> clicking sets 'dark'
+    await user.click(screen.getByRole('button'));
+
+    // Confirm dark class is applied and localStorage has 'dark'
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(localStorageMock['theme']).toBe('dark');
+
+    // Simulate navigation: unmount (navigate away) then remount (navigate back)
+    unmount();
+    document.documentElement.classList.remove('dark');
+
+    render(
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>
+    );
+
+    // Theme should be restored from localStorage as 'dark'
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to system mode');
+  });
+
+  it('light mode: localStorage stores "light" and dark class is removed from html', async () => {
+    const user = userEvent.setup();
+
+    // Start with dark theme in localStorage
+    localStorageMock['theme'] = 'dark';
+
+    render(
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>
+    );
+
+    // Initially dark class should be applied
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+
+    // Click to advance from 'dark' -> 'system'
+    await user.click(screen.getByRole('button'));
+    // Click to advance from 'system' -> 'light'
+    await user.click(screen.getByRole('button'));
+
+    expect(localStorageMock['theme']).toBe('light');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+  });
+
+  it('system preference (prefers-color-scheme: dark) is respected when no localStorage value is set', () => {
+    // Override matchMedia to report dark system preference
+    const darkMql = makeMatchMedia(true);
+    vi.stubGlobal('matchMedia', vi.fn(() => darkMql));
+
+    // No localStorage value set -- theme defaults to 'system'
+    render(
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>
+    );
+
+    // Dark class should be applied from system preference
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    // Theme state is still 'system' (not 'dark'), so next in cycle is 'light'
+    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to light mode');
+  });
+
+  it('ThemeToggle aria-label reflects current mode correctly through a full cycle', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>
+    );
+
+    // Initial state: theme is 'system' -> next is 'light'
+    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to light mode');
+
+    // Click: system -> light
+    await user.click(screen.getByRole('button'));
+    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to dark mode');
+
+    // Click: light -> dark
+    await user.click(screen.getByRole('button'));
+    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to system mode');
+
+    // Click: dark -> system
+    await user.click(screen.getByRole('button'));
+    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to light mode');
   });
 });
 
