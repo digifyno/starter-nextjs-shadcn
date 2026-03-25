@@ -171,6 +171,43 @@ describe('ThemeProvider', () => {
     expect(getByText('Hello')).toBeInTheDocument();
   });
 
+  // ── Theme cycling ─────────────────────────────────────────────────────────
+
+  it('cycles through themes: system → dark → light → system', () => {
+    const { result } = renderHook(() => useTheme(), {
+      wrapper: ({ children }) => <ThemeProvider>{children}</ThemeProvider>,
+    });
+
+    // Default is system (matchMedia returns false → no dark class)
+    expect(result.current.theme).toBe('system');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+
+    // system → dark
+    act(() => { result.current.setTheme('dark'); });
+    expect(result.current.theme).toBe('dark');
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+
+    // dark → light
+    act(() => { result.current.setTheme('light'); });
+    expect(result.current.theme).toBe('light');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+
+    // light → system (matchMedia returns false → light preference → no dark class)
+    act(() => { result.current.setTheme('system'); });
+    expect(result.current.theme).toBe('system');
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+  });
+
+  // ── SSR safety ────────────────────────────────────────────────────────────
+
+  it('does not throw during rendering (SSR safety guard)', () => {
+    // ThemeProvider guards against window access with typeof window === 'undefined'.
+    // In JSDOM, window is always available; this confirms the component renders without error.
+    expect(() => {
+      render(<ThemeProvider><div>child</div></ThemeProvider>);
+    }).not.toThrow();
+  });
+
   // ── Integration tests: ThemeToggle + ThemeProvider ────────────────────────
 
   it('dark mode persists across navigation (unmount and remount)', async () => {
