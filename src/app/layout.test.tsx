@@ -62,3 +62,11 @@ describe('dark mode accessibility', () => {
     expect(results).toHaveNoViolations();
   });
 });
+
+it('globals.css contains prefers-reduced-motion media query', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const cssPath = path.join(process.cwd(), 'src', 'app', 'globals.css');
+  const css = fs.readFileSync(cssPath, 'utf-8');
+  expect(css).toContain('prefers-reduced-motion: reduce');
+});
