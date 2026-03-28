@@ -35,7 +35,7 @@ src/
     manifest.ts    # PWA web app manifest (generates /manifest.webmanifest)
     not-found.test.tsx  # 404 page tests
     not-found.tsx  # 404 page
-    page.test.tsx  # Home page smoke test
+    page.test.tsx  # Home page smoke test + axe accessibility test
     page.tsx       # Home page (/)
   components/
     error-boundary.tsx  # ErrorBoundary (wraps header + main; fallback uses Button)
