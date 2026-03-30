@@ -1,5 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { vi } from 'vitest';
+import { vi, describe, beforeEach, afterEach } from 'vitest';
+import { axe, toHaveNoViolations } from 'jest-axe';
+
+expect.extend(toHaveNoViolations);
 import GlobalError from './global-error';
 
 it('does not render raw error.message in production', () => {
@@ -31,4 +34,20 @@ it('renders a generic heading instead of raw error in production', () => {
   // A heading should be visible as the fallback message
   expect(screen.getByRole('heading')).toBeInTheDocument();
   vi.unstubAllEnvs();
+});
+
+it('button does not have inline outline:none style', () => {
+  render(<GlobalError error={new Error('test')} reset={() => {}} />);
+  const button = screen.getByRole('button', { name: /try again/i });
+  expect(button.style.outline).not.toBe('none');
+});
+
+describe('dark mode accessibility', () => {
+  beforeEach(() => { document.documentElement.classList.add('dark'); });
+  afterEach(() => { document.documentElement.classList.remove('dark'); });
+
+  it('has no axe violations in dark mode', async () => {
+    const { container } = render(<GlobalError error={new Error('test')} reset={() => {}} />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
 });
