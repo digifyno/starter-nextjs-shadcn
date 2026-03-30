@@ -35,6 +35,8 @@ src/
     manifest.ts    # PWA web app manifest (generates /manifest.webmanifest)
     not-found.test.tsx  # 404 page tests
     not-found.tsx  # 404 page
+    opengraph-image.test.ts  # Tests for OgImage default export and metadata exports
+    opengraph-image.tsx  # OG image generation (1200×630 PNG via next/og ImageResponse)
     page.test.tsx  # Home page smoke test + axe accessibility test
     page.tsx       # Home page (/)
   components/

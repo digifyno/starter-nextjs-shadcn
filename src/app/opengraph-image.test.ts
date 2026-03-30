@@ -2,7 +2,8 @@ vi.mock('next/og', () => ({
   ImageResponse: class MockImageResponse {},
 }));
 
-import { alt, size, contentType } from './opengraph-image';
+import OgImage, { alt, size, contentType } from './opengraph-image';
+import { ImageResponse } from 'next/og';
 
 describe('opengraph-image', () => {
   it('exports correct alt text', () => {
@@ -15,5 +16,10 @@ describe('opengraph-image', () => {
 
   it('exports PNG content type', () => {
     expect(contentType).toBe('image/png');
+  });
+
+  it('default export renders an ImageResponse', () => {
+    const result = OgImage();
+    expect(result).toBeInstanceOf(ImageResponse);
   });
 });
