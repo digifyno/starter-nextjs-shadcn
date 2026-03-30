@@ -38,6 +38,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('logs error via componentDidCatch', () => {
+    vi.stubEnv('NODE_ENV', 'development');
     render(
       <ErrorBoundary>
         <Bomb shouldThrow={true} />
@@ -48,6 +49,7 @@ describe('ErrorBoundary', () => {
       expect.any(Error),
       expect.any(String)
     );
+    vi.unstubAllEnvs();
   });
 
   it('resets and re-renders children after clicking "Try again"', async () => {
