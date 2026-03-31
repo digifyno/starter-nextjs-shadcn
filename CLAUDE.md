@@ -24,7 +24,7 @@ npm run lint       # Run ESLint
 src/
   app/
     about/
-      page.test.tsx  # About page smoke test
+      page.test.tsx  # About page tests (smoke + axe including dark mode)
       page.tsx     # About page (/about)
     global-error.test.tsx  # Tests for global error boundary
     global-error.tsx  # Global error boundary (sanitized error messages, role=alert, production guard)
@@ -32,17 +32,26 @@ src/
     layout.test.tsx  # Full-layout axe accessibility test
     layout.tsx     # Root layout (metadata, html/body, ThemeProvider, ErrorBoundary, skip-to-content)
     loading.tsx    # App Router loading UI skeleton (shown during route transitions)
+    loading.test.tsx  # Tests for Loading skeleton component
     manifest.ts    # PWA web app manifest (generates /manifest.webmanifest)
+    manifest.test.ts  # Tests for PWA manifest output
     not-found.test.tsx  # 404 page tests
     not-found.tsx  # 404 page
     opengraph-image.test.ts  # Tests for OgImage default export and metadata exports
     opengraph-image.tsx  # OG image generation (1200×630 PNG via next/og ImageResponse)
     page.test.tsx  # Home page smoke test + axe accessibility test
     page.tsx       # Home page (/)
+    robots.ts      # Generates /robots.txt
+    robots.test.ts  # Tests for robots.txt output
+    sitemap.ts     # Generates /sitemap.xml
+    sitemap.test.ts  # Tests for sitemap output
+    twitter-image.tsx  # Twitter/X card image (800×800 PNG, re-uses OG image)
+    twitter-image.test.ts  # Tests for Twitter image metadata and default export
   components/
     error-boundary.tsx  # ErrorBoundary (wraps header + main; fallback uses Button)
+    error-boundary.test.tsx  # Tests for ErrorBoundary component
     theme-provider.test.tsx  # Unit tests for ThemeProvider component
-    theme-provider.tsx  # ThemeProvider (class-based dark mode)
+    theme-provider.tsx  # ThemeProvider (context + hooks; class-based DOM toggling)
     theme-toggle.test.tsx  # Unit tests for ThemeToggle component
     theme-toggle.tsx    # Dark/light mode toggle button
     ui/            # shadcn/ui components (Button, etc.)

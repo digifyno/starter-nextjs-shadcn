@@ -2,7 +2,8 @@ vi.mock('next/og', () => ({
   ImageResponse: class MockImageResponse {},
 }));
 
-import { alt, size, contentType } from './twitter-image';
+import TwitterImage, { alt, size, contentType } from './twitter-image';
+import { ImageResponse } from 'next/og';
 
 describe('twitter-image', () => {
   it('exports 800×800 size for 1:1 ratio', () => {
@@ -15,5 +16,10 @@ describe('twitter-image', () => {
 
   it('re-exports PNG content type', () => {
     expect(contentType).toBe('image/png');
+  });
+
+  it('default export renders an ImageResponse', () => {
+    const result = TwitterImage();
+    expect(result).toBeInstanceOf(ImageResponse);
   });
 });
