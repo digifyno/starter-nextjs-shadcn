@@ -29,3 +29,17 @@ describe('Loading component', () => {
     expect(await axe(container)).toHaveNoViolations();
   });
 });
+
+describe('dark mode accessibility', () => {
+  beforeEach(() => {
+    document.documentElement.classList.add('dark');
+  });
+  afterEach(() => {
+    document.documentElement.classList.remove('dark');
+  });
+
+  it('has no axe violations in dark mode', async () => {
+    const { container } = render(<Loading />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
