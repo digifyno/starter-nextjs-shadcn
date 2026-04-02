@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { vi, describe, beforeEach, afterEach } from 'vitest';
 import { axe, toHaveNoViolations } from 'jest-axe';
 
@@ -40,6 +41,31 @@ it('button does not have inline outline:none style', () => {
   render(<GlobalError error={new Error('test')} reset={() => {}} />);
   const button = screen.getByRole('button', { name: /try again/i });
   expect(button.style.outline).not.toBe('none');
+});
+
+it('calls reset when Enter is pressed on Try again button', async () => {
+  const user = userEvent.setup();
+  const reset = vi.fn();
+  render(<GlobalError error={new Error('test')} reset={reset} />);
+  const button = screen.getByRole('button', { name: /try again/i });
+  button.focus();
+  await user.keyboard('{Enter}');
+  expect(reset).toHaveBeenCalledTimes(1);
+});
+
+it('renders error.digest as an Error ID when present', () => {
+  const error = Object.assign(new Error('test'), { digest: 'abc-123' });
+  render(<GlobalError error={error} reset={() => {}} />);
+  expect(screen.getByText(/Error ID/i)).toBeInTheDocument();
+  expect(screen.getByText(/abc-123/)).toBeInTheDocument();
+});
+
+it('shows raw error.message in development mode', () => {
+  vi.stubEnv('NODE_ENV', 'development');
+  const error = new Error('Dev-only details');
+  render(<GlobalError error={error} reset={() => {}} />);
+  expect(screen.getByText('Dev-only details')).toBeInTheDocument();
+  vi.unstubAllEnvs();
 });
 
 describe('dark mode accessibility', () => {
