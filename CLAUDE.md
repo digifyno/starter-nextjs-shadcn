@@ -34,7 +34,7 @@ src/
     loading.tsx    # App Router loading UI skeleton (shown during route transitions)
     loading.test.tsx  # Tests for Loading skeleton component
     manifest.ts    # PWA web app manifest (generates /manifest.webmanifest)
-    manifest.test.ts  # Tests for PWA manifest output
+    manifest.test.ts  # Tests for PWA manifest output (full field coverage: name, short_name, description, display, start_url, background_color, theme_color, icons)
     not-found.test.tsx  # 404 page tests
     not-found.tsx  # 404 page
     opengraph-image.test.ts  # Tests for OgImage default export and metadata exports
