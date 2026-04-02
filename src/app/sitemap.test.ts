@@ -30,4 +30,14 @@ describe('sitemap', () => {
     const entries = sitemap();
     expect(entries[0].url).toBe('https://example.com');
   });
+
+  it('root entry has changeFrequency "yearly"', () => {
+    const entries = sitemap();
+    expect(entries[0].changeFrequency).toBe('yearly');
+  });
+
+  it('/about entry has changeFrequency "monthly"', () => {
+    const entries = sitemap();
+    expect(entries[1].changeFrequency).toBe('monthly');
+  });
 });
