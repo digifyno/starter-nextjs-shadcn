@@ -43,6 +43,11 @@ it('button does not have inline outline:none style', () => {
   expect(button.style.outline).not.toBe('none');
 });
 
+it('has no axe accessibility violations in light mode', async () => {
+  const { container } = render(<GlobalError error={new Error('test')} reset={() => {}} />);
+  expect(await axe(container)).toHaveNoViolations();
+});
+
 it('calls reset when Enter is pressed on Try again button', async () => {
   const user = userEvent.setup();
   const reset = vi.fn();
