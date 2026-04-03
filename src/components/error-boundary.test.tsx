@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import { ErrorBoundary } from './error-boundary';
+
+expect.extend(toHaveNoViolations);
 
 // Suppress console.error output during error boundary tests
 const originalConsoleError = console.error;
@@ -162,6 +165,29 @@ describe('ErrorBoundary', () => {
     rerender(<ErrorBoundary><Bomb shouldThrow={true} /></ErrorBoundary>);
     expect(screen.getByRole('alert')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+  });
+
+  it('fallback UI has no axe accessibility violations', async () => {
+    const { container } = render(
+      <ErrorBoundary>
+        <Bomb shouldThrow={true} />
+      </ErrorBoundary>
+    );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+
+  describe('dark mode accessibility', () => {
+    beforeEach(() => { document.documentElement.classList.add('dark'); });
+    afterEach(() => { document.documentElement.classList.remove('dark'); });
+
+    it('fallback UI has no axe violations in dark mode', async () => {
+      const { container } = render(
+        <ErrorBoundary>
+          <Bomb shouldThrow={true} />
+        </ErrorBoundary>
+      );
+      expect(await axe(container)).toHaveNoViolations();
+    });
   });
 
   it('fallback shows accessible "Try again" button and no raw error text', () => {
