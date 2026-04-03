@@ -49,7 +49,7 @@ src/
     twitter-image.test.ts  # Tests for Twitter image metadata and default export
   components/
     error-boundary.tsx  # ErrorBoundary (wraps header + main; fallback uses Button)
-    error-boundary.test.tsx  # Tests for ErrorBoundary component
+    error-boundary.test.tsx  # Tests for ErrorBoundary component (smoke, reset, axe accessibility including dark mode)
     theme-provider.test.tsx  # Unit tests for ThemeProvider component
     theme-provider.tsx  # ThemeProvider (context + hooks; class-based DOM toggling)
     theme-toggle.test.tsx  # Unit tests for ThemeToggle component
