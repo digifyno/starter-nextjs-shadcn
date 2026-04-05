@@ -1,8 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { axe, toHaveNoViolations } from 'jest-axe';
 import { vi } from 'vitest';
 import { ThemeToggle } from './theme-toggle';
 import { ThemeProvider } from './theme-provider';
+
+expect.extend(toHaveNoViolations);
 
 beforeEach(() => {
   localStorage.clear();
@@ -106,4 +109,23 @@ it('does not suppress focus ring via inline outline style', () => {
   const button = screen.getByRole('button');
   expect(button.style.outline).not.toBe('none');
   expect(button.style.outlineStyle).not.toBe('none');
+});
+
+it('has no axe accessibility violations', async () => {
+  const { container } = render(<ThemeToggle />, { wrapper: Wrapper });
+  expect(await axe(container)).toHaveNoViolations();
+});
+
+describe('dark mode accessibility', () => {
+  beforeEach(() => {
+    document.documentElement.classList.add('dark');
+  });
+  afterEach(() => {
+    document.documentElement.classList.remove('dark');
+  });
+
+  it('has no axe violations in dark mode', async () => {
+    const { container } = render(<ThemeToggle />, { wrapper: Wrapper });
+    expect(await axe(container)).toHaveNoViolations();
+  });
 });
