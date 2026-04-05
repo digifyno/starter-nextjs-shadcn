@@ -52,7 +52,7 @@ src/
     error-boundary.test.tsx  # Tests for ErrorBoundary component (smoke, reset, axe accessibility including dark mode)
     theme-provider.test.tsx  # Unit tests for ThemeProvider component
     theme-provider.tsx  # ThemeProvider (context + hooks; class-based DOM toggling)
-    theme-toggle.test.tsx  # Unit tests for ThemeToggle component
+    theme-toggle.test.tsx  # Unit tests for ThemeToggle component (smoke, keyboard interaction, axe accessibility including dark mode)
     theme-toggle.tsx    # Dark/light mode toggle button
     ui/            # shadcn/ui components (Button, etc.)
   hooks/
