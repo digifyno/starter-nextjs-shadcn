@@ -23,6 +23,23 @@ describe('RootLayout', () => {
     expect(skip).toHaveAttribute('href', '#main-content');
   });
 
+  it('renders main element with id="main-content" as skip-link target', () => {
+    render(<RootLayout><div /></RootLayout>);
+    expect(document.getElementById('main-content')).toBeInTheDocument();
+    expect(document.getElementById('main-content')?.tagName).toBe('MAIN');
+  });
+
+  it('includes JSON-LD structured data with correct type and name', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    render(<RootLayout><div /></RootLayout>);
+    consoleError.mockRestore();
+    const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+    expect(scripts.length).toBeGreaterThan(0);
+    const data = JSON.parse(scripts[0].textContent ?? '{}');
+    expect(data['@type']).toBe('WebSite');
+    expect(data.name).toBe('My App');
+  });
+
   it('full layout has no axe accessibility violations', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const { container } = render(
