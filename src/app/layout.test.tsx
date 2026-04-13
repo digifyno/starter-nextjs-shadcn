@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { vi } from 'vitest';
@@ -80,10 +82,10 @@ describe('dark mode accessibility', () => {
   });
 });
 
-it('globals.css contains prefers-reduced-motion media query', () => {
-  const fs = require('fs');
-  const path = require('path');
-  const cssPath = path.join(process.cwd(), 'src', 'app', 'globals.css');
-  const css = fs.readFileSync(cssPath, 'utf-8');
-  expect(css).toContain('prefers-reduced-motion: reduce');
+describe('globals.css', () => {
+  it('contains prefers-reduced-motion media query', () => {
+    const cssPath = join(process.cwd(), 'src', 'app', 'globals.css');
+    const css = readFileSync(cssPath, 'utf-8');
+    expect(css).toContain('prefers-reduced-motion: reduce');
+  });
 });
