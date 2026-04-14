@@ -40,4 +40,16 @@ describe('manifest', () => {
     const icons = manifest().icons ?? [];
     expect(icons.every((i) => i.type === 'image/png')).toBe(true);
   });
+
+  it('512x512 icon has purpose maskable', () => {
+    const icons = manifest().icons ?? [];
+    const icon512 = icons.find((i) => i.sizes === '512x512');
+    expect(icon512?.purpose).toBe('maskable');
+  });
+
+  it('192x192 icon has purpose any', () => {
+    const icons = manifest().icons ?? [];
+    const icon192 = icons.find((i) => i.sizes === '192x192');
+    expect(icon192?.purpose).toBe('any');
+  });
 });
