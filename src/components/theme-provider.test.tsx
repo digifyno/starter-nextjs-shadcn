@@ -198,6 +198,24 @@ describe('ThemeProvider', () => {
     expect(document.documentElement.classList.contains('dark')).toBe(false);
   });
 
+  // ── Cross-tab sync ────────────────────────────────────────────────────────
+
+  it('updates theme when storage event fires from another tab', () => {
+    const { result } = renderHook(() => useTheme(), {
+      wrapper: ({ children }) => <ThemeProvider>{children}</ThemeProvider>,
+    });
+
+    expect(result.current.theme).toBe('system');
+
+    act(() => {
+      window.dispatchEvent(
+        new StorageEvent('storage', { key: 'theme', newValue: 'dark' })
+      );
+    });
+
+    expect(result.current.theme).toBe('dark');
+  });
+
   // ── SSR safety ────────────────────────────────────────────────────────────
 
   it('does not throw during rendering (SSR safety guard)', () => {

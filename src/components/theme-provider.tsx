@@ -14,6 +14,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === 'theme' && e.newValue) {
+        setTheme(e.newValue as Theme);
+      }
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
+
+  useEffect(() => {
     const root = document.documentElement;
     const applyTheme = (dark: boolean) => {
       root.classList.toggle('dark', dark);
