@@ -57,8 +57,8 @@ describe('useLocalStorage', () => {
           result.current[1](99);
         });
       }).not.toThrow();
-      // In-memory state still updates even when persist fails
-      expect(result.current[0]).toBe(99);
+      // When persist fails the value stays at initialValue (no storage event fired)
+      expect(result.current[0]).toBe(0);
       expect(consoleSpy).not.toHaveBeenCalled();
     });
 
@@ -124,6 +124,23 @@ describe('useLocalStorage', () => {
       });
       expect(result.current[0]).toBe('defined-now');
       expect(consoleSpy).not.toHaveBeenCalled();
+    });
+
+    it('two instances with the same key stay in sync when one writes', () => {
+      const { result: r1 } = renderHook(() => useLocalStorage('sync-live', 'init'));
+      const { result: r2 } = renderHook(() => useLocalStorage('sync-live', 'init'));
+      act(() => { r1.current[1]('updated'); });
+      expect(r1.current[0]).toBe('updated');
+      expect(r2.current[0]).toBe('updated');
+    });
+
+    it('updates when a storage event fires from another tab', () => {
+      const { result } = renderHook(() => useLocalStorage('tab-sync', 'old'));
+      act(() => {
+        localStorage.setItem('tab-sync', JSON.stringify('from-other-tab'));
+        window.dispatchEvent(new StorageEvent('storage', { key: 'tab-sync', newValue: JSON.stringify('from-other-tab') }));
+      });
+      expect(result.current[0]).toBe('from-other-tab');
     });
   });
 });
