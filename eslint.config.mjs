@@ -1,10 +1,18 @@
-import { fixupConfigRules } from '@eslint/compat';
-import nextConfig from 'eslint-config-next/core-web-vitals';
-import tsConfig from 'eslint-config-next/typescript';
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
 
 const eslintConfig = [
-  ...fixupConfigRules(nextConfig),
-  ...fixupConfigRules(tsConfig),
-];
+  ...nextVitals,
+  ...nextTs,
+  {
+    ignores: [
+      '.next/**',
+      'out/**',
+      'build/**',
+      'dist/**',
+      'next-env.d.ts',
+    ],
+  },
+]
 
-export default eslintConfig;
+export default eslintConfig
