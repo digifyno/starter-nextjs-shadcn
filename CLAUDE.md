@@ -59,6 +59,9 @@ npx shadcn@latest init --preset <code>
 ```
 Generate and share presets at https://ui.shadcn.com/create
 
+### ESLint
+Config: `eslint.config.mjs` uses native ESLint flat config (no `fixupConfigRules`). Ignores: `.next/`, `dist/`, `out/`, `build/`, `next-env.d.ts`.
+
 ### Tailwind v4
 No `tailwind.config.js` -- theme is configured with `@theme` blocks in `src/app/globals.css`.
 
