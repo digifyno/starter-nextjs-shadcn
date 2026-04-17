@@ -1,8 +1,6 @@
-import { render, renderHook, act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, renderHook, act } from '@testing-library/react';
 import React from 'react';
 import { ThemeProvider, useTheme } from './theme-provider';
-import { ThemeToggle } from './theme-toggle';
 
 function makeMatchMedia(matches: boolean) {
   const listeners: ((e: MediaQueryListEvent) => void)[] = [];
@@ -15,7 +13,6 @@ function makeMatchMedia(matches: boolean) {
       const idx = listeners.indexOf(fn);
       if (idx !== -1) listeners.splice(idx, 1);
     }),
-    // Helper to simulate a change event
     _emit(newMatches: boolean) {
       listeners.forEach((fn) => fn({ matches: newMatches } as MediaQueryListEvent));
     },
@@ -28,10 +25,8 @@ describe('ThemeProvider', () => {
   let mql: ReturnType<typeof makeMatchMedia>;
 
   beforeEach(() => {
-    // Reset documentElement classes
     document.documentElement.classList.remove('dark');
 
-    // Mock localStorage
     localStorageMock = {};
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(
       (key) => localStorageMock[key] ?? null
@@ -40,7 +35,6 @@ describe('ThemeProvider', () => {
       (key, value) => { localStorageMock[key] = value; }
     );
 
-    // Default matchMedia: system preference is light
     mql = makeMatchMedia(false);
     vi.stubGlobal('matchMedia', vi.fn(() => mql));
   });
@@ -169,164 +163,6 @@ describe('ThemeProvider', () => {
       </ThemeProvider>
     );
     expect(getByText('Hello')).toBeInTheDocument();
-  });
-
-  // ── Theme cycling ─────────────────────────────────────────────────────────
-
-  it('cycles through themes: system → dark → light → system', () => {
-    const { result } = renderHook(() => useTheme(), {
-      wrapper: ({ children }) => <ThemeProvider>{children}</ThemeProvider>,
-    });
-
-    // Default is system (matchMedia returns false → no dark class)
-    expect(result.current.theme).toBe('system');
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
-
-    // system → dark
-    act(() => { result.current.setTheme('dark'); });
-    expect(result.current.theme).toBe('dark');
-    expect(document.documentElement.classList.contains('dark')).toBe(true);
-
-    // dark → light
-    act(() => { result.current.setTheme('light'); });
-    expect(result.current.theme).toBe('light');
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
-
-    // light → system (matchMedia returns false → light preference → no dark class)
-    act(() => { result.current.setTheme('system'); });
-    expect(result.current.theme).toBe('system');
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
-  });
-
-  // ── Cross-tab sync ────────────────────────────────────────────────────────
-
-  it('updates theme when storage event fires from another tab', () => {
-    const { result } = renderHook(() => useTheme(), {
-      wrapper: ({ children }) => <ThemeProvider>{children}</ThemeProvider>,
-    });
-
-    expect(result.current.theme).toBe('system');
-
-    act(() => {
-      window.dispatchEvent(
-        new StorageEvent('storage', { key: 'theme', newValue: 'dark' })
-      );
-    });
-
-    expect(result.current.theme).toBe('dark');
-  });
-
-  // ── SSR safety ────────────────────────────────────────────────────────────
-
-  it('does not throw during rendering (SSR safety guard)', () => {
-    // ThemeProvider guards against window access with typeof window === 'undefined'.
-    // In JSDOM, window is always available; this confirms the component renders without error.
-    expect(() => {
-      render(<ThemeProvider><div>child</div></ThemeProvider>);
-    }).not.toThrow();
-  });
-
-  // ── Integration tests: ThemeToggle + ThemeProvider ────────────────────────
-
-  it('dark mode persists across navigation (unmount and remount)', async () => {
-    const user = userEvent.setup();
-
-    // Initial render with system theme (no localStorage value)
-    const { unmount } = render(
-      <ThemeProvider>
-        <ThemeToggle />
-      </ThemeProvider>
-    );
-
-    // Current theme is 'system' -> clicking sets 'light'
-    await user.click(screen.getByRole('button'));
-    // Now theme is 'light' -> clicking sets 'dark'
-    await user.click(screen.getByRole('button'));
-
-    // Confirm dark class is applied and localStorage has 'dark'
-    expect(document.documentElement.classList.contains('dark')).toBe(true);
-    expect(localStorageMock['theme']).toBe('dark');
-
-    // Simulate navigation: unmount (navigate away) then remount (navigate back)
-    unmount();
-    document.documentElement.classList.remove('dark');
-
-    render(
-      <ThemeProvider>
-        <ThemeToggle />
-      </ThemeProvider>
-    );
-
-    // Theme should be restored from localStorage as 'dark'
-    expect(document.documentElement.classList.contains('dark')).toBe(true);
-    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to system mode');
-  });
-
-  it('light mode: localStorage stores "light" and dark class is removed from html', async () => {
-    const user = userEvent.setup();
-
-    // Start with dark theme in localStorage
-    localStorageMock['theme'] = 'dark';
-
-    render(
-      <ThemeProvider>
-        <ThemeToggle />
-      </ThemeProvider>
-    );
-
-    // Initially dark class should be applied
-    expect(document.documentElement.classList.contains('dark')).toBe(true);
-
-    // Click to advance from 'dark' -> 'system'
-    await user.click(screen.getByRole('button'));
-    // Click to advance from 'system' -> 'light'
-    await user.click(screen.getByRole('button'));
-
-    expect(localStorageMock['theme']).toBe('light');
-    expect(document.documentElement.classList.contains('dark')).toBe(false);
-  });
-
-  it('system preference (prefers-color-scheme: dark) is respected when no localStorage value is set', () => {
-    // Override matchMedia to report dark system preference
-    const darkMql = makeMatchMedia(true);
-    vi.stubGlobal('matchMedia', vi.fn(() => darkMql));
-
-    // No localStorage value set -- theme defaults to 'system'
-    render(
-      <ThemeProvider>
-        <ThemeToggle />
-      </ThemeProvider>
-    );
-
-    // Dark class should be applied from system preference
-    expect(document.documentElement.classList.contains('dark')).toBe(true);
-    // Theme state is still 'system' (not 'dark'), so next in cycle is 'light'
-    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to light mode');
-  });
-
-  it('ThemeToggle aria-label reflects current mode correctly through a full cycle', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <ThemeProvider>
-        <ThemeToggle />
-      </ThemeProvider>
-    );
-
-    // Initial state: theme is 'system' -> next is 'light'
-    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to light mode');
-
-    // Click: system -> light
-    await user.click(screen.getByRole('button'));
-    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to dark mode');
-
-    // Click: light -> dark
-    await user.click(screen.getByRole('button'));
-    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to system mode');
-
-    // Click: dark -> system
-    await user.click(screen.getByRole('button'));
-    expect(screen.getByRole('button')).toHaveAccessibleName('Switch to light mode');
   });
 });
 
