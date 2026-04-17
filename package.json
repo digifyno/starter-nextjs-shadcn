@@ -40,7 +40,7 @@
     "jsdom": "^28.1.0",
     "serve": "^14.2.6",
     "tailwindcss": "^4.2.1",
-    "typescript": "^5.7.2",
+    "typescript": "^6.0.0",
     "vitest": "^4.1.2"
   }
 }
