@@ -99,6 +99,20 @@ import { ArrowRight } from 'lucide-react';
 <ArrowRight className="h-4 w-4" />
 ```
 
+### Upgrading TypeScript
+After bumping the version in `package.json` and running `npm install`, validate before committing:
+```bash
+# Verify binary installed correctly
+./node_modules/.bin/tsc --version
+
+# Run full type check
+npx tsc --noEmit
+
+# Run tests to catch compatibility issues
+npm test
+```
+Only commit if all three pass.
+
 ### Writing Tests
 Tests live alongside source files (e.g., `page.test.tsx`) or in `src/test/`. Use `@testing-library/react` for component tests:
 ```tsx
