@@ -21,13 +21,38 @@ npm run lint       # Run ESLint
 
 ## Project Structure
 
-- `src/app/` — pages, route handlers, and Next.js conventions (layout, loading, not-found, metadata files)
-- `src/components/` — shared React components (ThemeProvider, ThemeToggle, ErrorBoundary, `ui/` for shadcn)
-- `src/hooks/` — custom hooks (e.g., `useLocalStorage`)
-- `src/lib/` — utilities (e.g., `cn()` helper)
-- `src/test/` — test setup (Vitest + jest-dom)
-- `public/` — static assets including PWA icons (replace before production)
-- `dist/` — build output (git-ignored)
+```
+src/
+  app/
+    about/page.tsx              # About page (/about)
+    global-error.tsx            # Global error boundary (sanitized errors, role=alert, production guard)
+    globals.css                 # Tailwind v4 @theme config + base styles
+    layout.tsx                  # Root layout (metadata, html/body, ThemeProvider, ErrorBoundary, skip-to-content)
+    loading.tsx                 # App Router loading UI skeleton
+    manifest.ts                 # PWA web app manifest
+    not-found.tsx               # 404 page
+    opengraph-image.tsx         # OG image generation (1200×630 PNG via next/og ImageResponse)
+    page.tsx                    # Home page (/)
+    robots.ts                   # Generates /robots.txt
+    sitemap.ts                  # Generates /sitemap.xml
+    twitter-image.tsx           # Twitter/X card image (800×800 PNG)
+  components/
+    error-boundary.tsx          # ErrorBoundary (wraps header + main; fallback uses Button)
+    theme-provider.tsx          # ThemeProvider (context + hooks; class-based DOM toggling)
+    theme-provider-sync.test.tsx  # Cross-tab sync and SSR safety tests
+    theme-toggle.tsx            # Dark/light mode toggle button
+    ui/                         # shadcn/ui components (Button, etc.)
+  hooks/
+    use-local-storage.ts        # useLocalStorage<T> — SSR-safe, handles storage errors and corrupt JSON
+  lib/
+    utils.ts                    # cn() helper (clsx + tailwind-merge)
+  test/
+    setup.ts                    # Vitest setup (@testing-library/jest-dom matchers)
+public/
+  icon-192x192.png              # PWA icon (192×192)
+  icon-512x512.png              # PWA icon (512×512)
+dist/                           # Build output (git-ignored)
+```
 
 ## Key Patterns
 
