@@ -5,7 +5,7 @@ import Home from './page';
 expect.extend(toHaveNoViolations);
 
 describe('Home page', () => {
-  it('renders welcome heading', () => {
+  it('renders welcome heading', { tags: ['unit'] }, () => {
     render(<Home />);
     expect(screen.getByRole('heading', { name: /welcome/i })).toBeInTheDocument();
   });

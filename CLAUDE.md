@@ -125,6 +125,19 @@ it('renders heading', () => {
 });
 ```
 
+Tags are declared in `vitest.config.ts` and applied per test with the options object. All tags used in tests must be declared in the config (`strictTags` enforcement):
+```ts
+it('renders heading', { tags: ['unit'] }, () => { ... })
+```
+
+```bash
+# Run only unit-tagged tests
+npx vitest --tags-filter="unit"
+
+# Run all non-slow tests
+npx vitest --tags-filter="!slow"
+```
+
 For accessibility testing use `jest-axe`:
 ```tsx
 import { axe, toHaveNoViolations } from 'jest-axe';
