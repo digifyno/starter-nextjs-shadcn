@@ -7,7 +7,7 @@ describe('useLocalStorage', () => {
     vi.restoreAllMocks();
   });
 
-  it('returns initialValue when storage is empty', () => {
+  it('returns initialValue when storage is empty', { tags: ['unit'] }, () => {
     const { result } = renderHook(() => useLocalStorage('test-key', 'default'));
     expect(result.current[0]).toBe('default');
   });

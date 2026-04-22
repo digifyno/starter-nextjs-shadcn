@@ -8,6 +8,22 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
+    tags: [
+      {
+        name: 'unit',
+        description: 'Fast, isolated unit tests with no side effects.',
+      },
+      {
+        name: 'integration',
+        description: 'Tests that cross module or component boundaries.',
+      },
+      {
+        name: 'slow',
+        description: 'Tests known to be slow; given extra timeout in CI.',
+        timeout: 30_000,
+        retry: process.env.CI ? 2 : 0,
+      },
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
