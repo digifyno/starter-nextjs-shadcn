@@ -1,5 +1,6 @@
 'use client';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 
 type Theme = 'light' | 'dark' | 'system';
 const ThemeContext = createContext<{ theme: Theme; setTheme: (t: Theme) => void }>({
@@ -8,28 +9,13 @@ const ThemeContext = createContext<{ theme: Theme; setTheme: (t: Theme) => void 
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === 'undefined') return 'system';
-    return (localStorage.getItem('theme') as Theme | null) ?? 'system';
-  });
-
-  useEffect(() => {
-    const handler = (e: StorageEvent) => {
-      if (e.key === 'theme' && e.newValue) {
-        setTheme(e.newValue as Theme);
-      }
-    };
-    window.addEventListener('storage', handler);
-    return () => window.removeEventListener('storage', handler);
-  }, []);
+  const [theme, setTheme] = useLocalStorage<Theme>('theme', 'system');
 
   useEffect(() => {
     const root = document.documentElement;
     const applyTheme = (dark: boolean) => {
       root.classList.toggle('dark', dark);
     };
-
-    localStorage.setItem('theme', theme);
 
     if (theme === 'system') {
       const mql = window.matchMedia('(prefers-color-scheme: dark)');
