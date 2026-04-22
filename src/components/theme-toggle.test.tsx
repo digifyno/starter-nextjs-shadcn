@@ -43,13 +43,13 @@ it('button has accessible name', () => {
 // ── accessible name in each theme state ───────────────────────────────────────
 
 it("shows 'Switch to dark mode' aria-label when theme is light", () => {
-  localStorage.setItem('theme', 'light');
+  localStorage.setItem('theme', '"light"');
   render(<ThemeToggle />, { wrapper: Wrapper });
   expect(screen.getByRole('button')).toHaveAccessibleName('Switch to dark mode');
 });
 
 it("shows 'Switch to system mode' aria-label when theme is dark", () => {
-  localStorage.setItem('theme', 'dark');
+  localStorage.setItem('theme', '"dark"');
   render(<ThemeToggle />, { wrapper: Wrapper });
   expect(screen.getByRole('button')).toHaveAccessibleName('Switch to system mode');
 });
@@ -77,7 +77,7 @@ it('receives focus when Tab is pressed from a preceding focusable element', asyn
 
 it('activates toggle when Enter is pressed while focused', async () => {
   const user = userEvent.setup();
-  localStorage.setItem('theme', 'light');
+  localStorage.setItem('theme', '"light"');
   render(<ThemeToggle />, { wrapper: Wrapper });
   const button = screen.getByRole('button');
   button.focus();
@@ -88,7 +88,7 @@ it('activates toggle when Enter is pressed while focused', async () => {
 
 it('activates toggle when Space is pressed while focused', async () => {
   const user = userEvent.setup();
-  localStorage.setItem('theme', 'light');
+  localStorage.setItem('theme', '"light"');
   render(<ThemeToggle />, { wrapper: Wrapper });
   const button = screen.getByRole('button');
   button.focus();

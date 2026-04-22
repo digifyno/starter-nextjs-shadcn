@@ -45,7 +45,7 @@ describe('ThemeProvider', () => {
   });
 
   it('reads initial theme from localStorage (dark)', () => {
-    localStorageMock['theme'] = 'dark';
+    localStorageMock['theme'] = '"dark"';
     const { result } = renderHook(() => useTheme(), {
       wrapper: ({ children }) => <ThemeProvider>{children}</ThemeProvider>,
     });
@@ -66,7 +66,7 @@ describe('ThemeProvider', () => {
     act(() => {
       result.current.setTheme('light');
     });
-    expect(localStorage.setItem).toHaveBeenCalledWith('theme', 'light');
+    expect(localStorage.setItem).toHaveBeenCalledWith('theme', '"light"');
   });
 
   it('adds dark class when setTheme("dark") is called', () => {
