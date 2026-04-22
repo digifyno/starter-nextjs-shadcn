@@ -77,8 +77,9 @@ describe('ThemeProvider sync and integration', () => {
     expect(result.current.theme).toBe('system');
 
     act(() => {
+      localStorageMock['theme'] = '"dark"';
       window.dispatchEvent(
-        new StorageEvent('storage', { key: 'theme', newValue: 'dark' })
+        new StorageEvent('storage', { key: 'theme', newValue: '"dark"' })
       );
     });
 
@@ -106,7 +107,7 @@ describe('ThemeProvider sync and integration', () => {
     await user.click(screen.getByRole('button'));
 
     expect(document.documentElement.classList.contains('dark')).toBe(true);
-    expect(localStorageMock['theme']).toBe('dark');
+    expect(localStorageMock['theme']).toBe('"dark"');
 
     unmount();
     document.documentElement.classList.remove('dark');
@@ -124,7 +125,7 @@ describe('ThemeProvider sync and integration', () => {
   it('light mode: localStorage stores "light" and dark class is removed from html', async () => {
     const user = userEvent.setup();
 
-    localStorageMock['theme'] = 'dark';
+    localStorageMock['theme'] = '"dark"';
 
     render(
       <ThemeProvider>
@@ -137,7 +138,7 @@ describe('ThemeProvider sync and integration', () => {
     await user.click(screen.getByRole('button'));
     await user.click(screen.getByRole('button'));
 
-    expect(localStorageMock['theme']).toBe('light');
+    expect(localStorageMock['theme']).toBe('"light"');
     expect(document.documentElement.classList.contains('dark')).toBe(false);
   });
 
