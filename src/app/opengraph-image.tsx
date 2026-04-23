@@ -1,11 +1,17 @@
 import { ImageResponse } from 'next/og';
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 export const alt = 'My App';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 export const dynamic = 'force-static';
 
-export default function OgImage() {
+export default async function OgImage() {
+  const fontData = await readFile(
+    join(process.cwd(), 'public/fonts/Inter-Bold.ttf')
+  );
+
   return new ImageResponse(
     (
       <div
@@ -17,7 +23,7 @@ export default function OgImage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily: 'sans-serif',
+          fontFamily: 'Inter',
           color: 'white',
           padding: '80px',
         }}
@@ -28,6 +34,16 @@ export default function OgImage() {
         </p>
       </div>
     ),
-    size
+    {
+      ...size,
+      fonts: [
+        {
+          name: 'Inter',
+          data: fontData,
+          style: 'normal',
+          weight: 700,
+        },
+      ],
+    }
   );
 }
