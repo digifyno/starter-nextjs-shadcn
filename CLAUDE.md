@@ -1,3 +1,9 @@
+<!-- rsi-worker-metadata
+  workerId=86dd77d8-f0a0-4803-99fe-88d72784857f
+  productId=a6e200f9-d97b-5c98-828a-7f108d560ec6
+  scopeConfigHash=595062fe8dedf7c8
+  generatedAt=2026-04-24T22:02:56.153Z
+-->
 # Project Guide
 
 ## Stack
