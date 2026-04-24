@@ -29,8 +29,7 @@
     "types": [
       "node",
       "vitest/globals"
-    ],
-    "esModuleInterop": true
+    ]
   },
   "include": [
     "next-env.d.ts",
