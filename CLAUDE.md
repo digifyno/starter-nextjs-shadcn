@@ -76,10 +76,13 @@ Components are added to `src/components/ui/`. They use the unified `radix-ui` pa
 ### Using Design System Presets
 Share your entire design system (colors, fonts, radius) as a preset code:
 ```bash
-# Apply a preset during init
+# Apply a preset to an existing project (re-themes without starting over)
+npx shadcn@latest apply --preset <code>
+
+# Apply a preset during init (for new projects)
 npx shadcn@latest init --preset <code>
 
-# Reinitialize with a different preset
+# Reinitialize with a different preset (for new projects)
 npx shadcn@latest init --preset <code>
 ```
 Generate and share presets at https://ui.shadcn.com/create
