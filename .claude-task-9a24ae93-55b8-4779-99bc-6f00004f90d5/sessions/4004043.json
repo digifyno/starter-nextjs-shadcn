@@ -1,0 +1,1 @@
+{"pid":4004043,"sessionId":"c7008deb-1e56-4ab6-b065-ecb4f9f9a8cb","cwd":"/home/rsi/rsi-worktrees/c642554a","startedAt":1777385290834,"procStart":"100870747","version":"2.1.119","peerProtocol":1,"kind":"interactive","entrypoint":"sdk-cli","name":"code:Fix missing `await` in opengraph-image test","updatedAt":1777385290939}
