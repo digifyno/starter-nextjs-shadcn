@@ -18,8 +18,8 @@ describe('opengraph-image', () => {
     expect(contentType).toBe('image/png');
   });
 
-  it('default export renders an ImageResponse', () => {
-    const result = OgImage();
+  it('default export renders an ImageResponse', async () => {
+    const result = await OgImage();
     expect(result).toBeInstanceOf(ImageResponse);
   });
 });
